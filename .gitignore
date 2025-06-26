@@ -1,14 +1,23 @@
-# Python
+# .gitignore
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 .env
-
-# Node.js
-node_modules/
-frontend/build/
-
-# Docker volumes
-postgres_data/
+venv/
+.env.*
+*.sqlite3
+*.db
+*.log
+instance/
+docker-compose.override.yml
 
 # VSCode
 .vscode/
+
+# Docker
+*.pid
+*.sock
+*.tar
+*.img
+*.log
