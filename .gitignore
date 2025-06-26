@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.pyc
+.env
+
+# Node.js
+node_modules/
+frontend/build/
+
+# Docker volumes
+postgres_data/
+
+# VSCode
+.vscode/
