@@ -19,11 +19,11 @@ def categorize_transaction(data: CategorizeRequest, db: Session = Depends(get_db
         return {"error": "Transaction not found"}
 
     desc = transaction.description.lower()
-    if "food" in desc:
+    if "water" in desc:
         category = "Food"
-    elif "rent" in desc or "house" in desc:
+    elif "string" in desc or "house" in desc:
         category = "Rent"
-    elif "uber" in desc or "ola" in desc:
+    elif "grocessory" in desc or "ola" in desc:
         category = "Transport"
     else:
         category = random.choice(["Shopping", "Misc", "Health"])
