@@ -1,23 +1,32 @@
-// src/pages/AuthPage.js
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { AuthContext } from "../AuthContext";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext); // 👈 use context login
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    try {
+      const url = isLogin
+        ? "http://localhost:8000/users/login"
+        : "http://localhost:8000/users/register";
 
-    if (!username.trim()) {
-      alert("Username required");
-      return;
+      const payload = isLogin ? { email, password } : { name, email, password };
+
+      const res = await axios.post(url, payload);
+      login(res.data); // 👈 set user in context
+      navigate("/home");
+    } catch (err) {
+      alert(err.response?.data?.detail || "Auth failed");
     }
-
-    // ✅ You can add real auth logic here later
-    localStorage.setItem("currentUser", username);
-    navigate("/home");
   };
 
   return (
@@ -27,12 +36,38 @@ export default function AuthPage() {
           {isLogin ? "Login" : "Register"}
         </h2>
 
+        {!isLogin && (
+          <>
+            <label className="text-sm font-semibold">Name</label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Your name"
+              className="w-full p-2 mb-3 border rounded"
+              required
+            />
+          </>
+        )}
+
+        <label className="text-sm font-semibold">Email</label>
         <input
-          type="text"
-          placeholder="Enter username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
+          className="w-full p-2 mb-3 border rounded"
+          required
+        />
+
+        <label className="text-sm font-semibold">Password</label>
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
           className="w-full p-2 mb-4 border rounded"
+          required
         />
 
         <button

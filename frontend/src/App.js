@@ -1,62 +1,76 @@
-// App.js
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+// src/App.js
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "./AuthContext";
+
 import Navbar from "./components/Navbar";
 
-import AuthPage from "./pages/AuthPage";        // 👈 New
+import AuthPage from "./pages/AuthPage";
 import Home from "./pages/Home";
-import UserPage from "./pages/UserPage";
 import TransactionPage from "./pages/TransactionPage";
 import SummaryPage from "./pages/SummaryPage";
 import ChatPage from "./pages/ChatPage";
 
 function App() {
+  const { user } = useContext(AuthContext);
+
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<AuthPage />} />           {/* 👈 Default route */}
+        {/* Default route: login/register */}
+        <Route path="/" element={<AuthPage />} />
+
+        {/* Protected routes */}
         <Route
           path="/home"
           element={
-            <>
-              <Navbar />
-              <Home />
-            </>
-          }
-        />
-        <Route
-          path="/users"
-          element={
-            <>
-              <Navbar />
-              <UserPage />
-            </>
+            user ? (
+              <>
+                <Navbar />
+                <Home />
+              </>
+            ) : (
+              <Navigate to="/" />
+            )
           }
         />
         <Route
           path="/transactions"
           element={
-            <>
-              <Navbar />
-              <TransactionPage />
-            </>
+            user ? (
+              <>
+                <Navbar />
+                <TransactionPage />
+              </>
+            ) : (
+              <Navigate to="/" />
+            )
           }
         />
         <Route
           path="/summary"
           element={
-            <>
-              <Navbar />
-              <SummaryPage />
-            </>
+            user ? (
+              <>
+                <Navbar />
+                <SummaryPage />
+              </>
+            ) : (
+              <Navigate to="/" />
+            )
           }
         />
         <Route
           path="/chat"
           element={
-            <>
-              <Navbar />
-              <ChatPage />
-            </>
+            user ? (
+              <>
+                <Navbar />
+                <ChatPage />
+              </>
+            ) : (
+              <Navigate to="/" />
+            )
           }
         />
       </Routes>

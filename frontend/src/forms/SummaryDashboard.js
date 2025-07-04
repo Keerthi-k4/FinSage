@@ -1,14 +1,27 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import axios from "axios";
+import { AuthContext } from "../AuthContext";
 
 export default function SummaryDashboard() {
   const [summary, setSummary] = useState({});
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    axios.get("http://localhost:8000/summary")
-      .then(res => setSummary(res.data.summary))
-      .catch(err => console.error("Failed to fetch summary", err));
-  }, []);
+    if (!user?.id) return;
+
+    axios
+      .get(`http://localhost:8000/summary?user_id=${user.id}`)
+      .then((res) => setSummary(res.data.summary))
+      .catch((err) => console.error("Failed to fetch summary", err));
+  }, [user]);
+
+  if (!user) {
+    return (
+      <div className="text-center text-gray-600 mt-6">
+        Please log in to view your summary.
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-xl mx-auto mt-6 p-4 bg-white rounded shadow">

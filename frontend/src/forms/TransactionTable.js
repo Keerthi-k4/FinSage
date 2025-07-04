@@ -1,14 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import axios from "axios";
+import { AuthContext } from "../AuthContext";
 
 export default function TransactionTable() {
+  const { user } = useContext(AuthContext); // 👈 Access logged-in user
   const [transactions, setTransactions] = useState([]);
   const [idToCategorize, setIdToCategorize] = useState("");
 
   const fetchTransactions = async () => {
     try {
       const res = await axios.get("http://localhost:8000/transactions");
-      setTransactions(res.data);
+      // Optional: filter to only show logged-in user's transactions
+      const userTx = res.data.filter((tx) => tx.user_id === user?.id);
+      setTransactions(userTx);
     } catch (err) {
       console.error("Failed to fetch transactions", err);
     }
@@ -28,18 +32,27 @@ export default function TransactionTable() {
   };
 
   useEffect(() => {
-    fetchTransactions();
-  }, []);
+    if (user?.id) {
+      fetchTransactions();
+    }
+  }, [user]);
+
+  if (!user) {
+    return (
+      <div className="text-center mt-6 text-gray-600">
+        Please log in to view your transactions.
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto mt-6 bg-white p-4 rounded shadow">
-      <h2 className="text-xl font-bold mb-4">📊 All Transactions</h2>
+      <h2 className="text-xl font-bold mb-4">📊 Your Transactions</h2>
 
       <table className="w-full table-auto text-left mb-6">
         <thead className="bg-gray-100">
           <tr>
             <th className="p-2">ID</th>
-            <th className="p-2">User ID</th>
             <th className="p-2">Amount</th>
             <th className="p-2">Description</th>
             <th className="p-2">Date</th>
@@ -51,7 +64,6 @@ export default function TransactionTable() {
           {transactions.map((tx) => (
             <tr key={tx.id} className="border-t">
               <td className="p-2">{tx.id}</td>
-              <td className="p-2">{tx.user_id}</td>
               <td className="p-2">₹{tx.amount}</td>
               <td className="p-2">{tx.description}</td>
               <td className="p-2">{tx.date}</td>

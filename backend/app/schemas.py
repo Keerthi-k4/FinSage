@@ -3,9 +3,15 @@ from datetime import date
 from typing import Optional
 
 # User schemas
+
 class UserCreate(BaseModel):
     name: str
-    email: EmailStr
+    email: str
+    password: str
+
+class UserLogin(BaseModel):
+    email: str
+    password: str
 
 class User(BaseModel):
     id: int

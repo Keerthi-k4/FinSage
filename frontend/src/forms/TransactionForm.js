@@ -1,14 +1,26 @@
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
 import axios from "axios";
+import { AuthContext } from "../AuthContext";
 
-export default function TransactionForm({ user_id }) {
+export default function TransactionForm() {
+  const { user } = useContext(AuthContext);
+
   const [form, setForm] = useState({
-    user_id: user_id || 1, // fallback to 1
+    user_id: "",
     amount: "",
     description: "",
     date: "",
     method: "cash",
   });
+
+  useEffect(() => {
+    if (user) {
+      setForm((prev) => ({
+        ...prev,
+        user_id: user.userId || user.id || user.id, // fallback handling
+      }));
+    }
+  }, [user]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -16,15 +28,32 @@ export default function TransactionForm({ user_id }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
-      await axios.post("http://localhost:8000/transactions", form);
+      const payload = {
+        ...form,
+        user_id: parseInt(form.user_id),
+        amount: parseFloat(form.amount),
+      };
+
+      await axios.post("http://localhost:8000/transactions", payload);
       alert("Transaction added!");
-      setForm({ ...form, amount: "", description: "", date: "" });
+
+      setForm((prev) => ({
+        ...prev,
+        amount: "",
+        description: "",
+        date: "",
+      }));
     } catch (err) {
-      console.error(err);
+      console.error("Transaction error:", err.response?.data || err);
       alert("Failed to submit transaction.");
     }
   };
+
+  if (!user) {
+    return <div className="text-center mt-6 text-gray-600">Please log in to add a transaction.</div>;
+  }
 
   return (
     <form
