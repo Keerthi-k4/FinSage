@@ -3,6 +3,8 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app import crud, schemas
 from app.models import Transaction
+from typing import List
+
 
 router = APIRouter()
 
@@ -10,6 +12,6 @@ router = APIRouter()
 def create_transaction(tx: schemas.TransactionCreate, db: Session = Depends(get_db)):
     return crud.create_transaction(db, tx)
 
-@router.get("/transactions")
+@router.get("/transactions", response_model=List[schemas.Transaction])
 def get_all_transactions(db: Session = Depends(get_db)):
     return db.query(Transaction).all()

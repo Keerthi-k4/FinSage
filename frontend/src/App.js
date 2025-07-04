@@ -1,20 +1,66 @@
-import UserForm from "./UserForm";
-import TransactionForm from "./TransactionForm";
-import SummaryDashboard from "./SummaryDashboard";
-import ChatBox from "./ChatBox";
-import TransactionTable from "./TransactionTable"; // ✅ Add this
+// App.js
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+
+import AuthPage from "./pages/AuthPage";        // 👈 New
+import Home from "./pages/Home";
+import UserPage from "./pages/UserPage";
+import TransactionPage from "./pages/TransactionPage";
+import SummaryPage from "./pages/SummaryPage";
+import ChatPage from "./pages/ChatPage";
 
 function App() {
-  const currentUserId = 2;
-
   return (
-    <div className="min-h-screen bg-gray-100 p-4 space-y-8">
-      <UserForm />
-      <TransactionForm user_id={currentUserId} />
-      <SummaryDashboard user_id={currentUserId} />
-      <TransactionTable /> {/* ✅ Shows table + categorize input */}
-      <ChatBox />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<AuthPage />} />           {/* 👈 Default route */}
+        <Route
+          path="/home"
+          element={
+            <>
+              <Navbar />
+              <Home />
+            </>
+          }
+        />
+        <Route
+          path="/users"
+          element={
+            <>
+              <Navbar />
+              <UserPage />
+            </>
+          }
+        />
+        <Route
+          path="/transactions"
+          element={
+            <>
+              <Navbar />
+              <TransactionPage />
+            </>
+          }
+        />
+        <Route
+          path="/summary"
+          element={
+            <>
+              <Navbar />
+              <SummaryPage />
+            </>
+          }
+        />
+        <Route
+          path="/chat"
+          element={
+            <>
+              <Navbar />
+              <ChatPage />
+            </>
+          }
+        />
+      </Routes>
+    </Router>
   );
 }
 
