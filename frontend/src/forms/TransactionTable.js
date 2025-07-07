@@ -3,15 +3,15 @@ import axios from "axios";
 import { AuthContext } from "../AuthContext";
 
 export default function TransactionTable() {
-  const { user } = useContext(AuthContext); // 👈 Access logged-in user
+  const { user } = useContext(AuthContext);
   const [transactions, setTransactions] = useState([]);
   const [idToCategorize, setIdToCategorize] = useState("");
 
   const fetchTransactions = async () => {
     try {
       const res = await axios.get("http://localhost:8000/transactions");
-      // Optional: filter to only show logged-in user's transactions
-      const userTx = res.data.filter((tx) => tx.user_id === user?.id);
+      // ✅ Correctly use user.user_id
+      const userTx = res.data.filter((tx) => tx.user_id === user?.user_id);
       setTransactions(userTx);
     } catch (err) {
       console.error("Failed to fetch transactions", err);
@@ -24,7 +24,7 @@ export default function TransactionTable() {
         transaction_id: parseInt(idToCategorize),
       });
       setIdToCategorize("");
-      fetchTransactions(); // Refresh after update
+      fetchTransactions();
     } catch (err) {
       console.error("Categorization failed", err);
       alert("Error categorizing transaction.");
@@ -32,7 +32,7 @@ export default function TransactionTable() {
   };
 
   useEffect(() => {
-    if (user?.id) {
+    if (user?.user_id) {
       fetchTransactions();
     }
   }, [user]);
@@ -66,7 +66,7 @@ export default function TransactionTable() {
               <td className="p-2">{tx.id}</td>
               <td className="p-2">₹{tx.amount}</td>
               <td className="p-2">{tx.description}</td>
-              <td className="p-2">{tx.date}</td>
+              <td className="p-2">{new Date(tx.date).toLocaleDateString()}</td>
               <td className="p-2">{tx.category || "—"}</td>
               <td className="p-2">{tx.method}</td>
             </tr>

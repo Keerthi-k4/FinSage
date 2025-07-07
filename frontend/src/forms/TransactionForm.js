@@ -17,7 +17,7 @@ export default function TransactionForm() {
     if (user) {
       setForm((prev) => ({
         ...prev,
-        user_id: user.userId || user.id || user.id, // fallback handling
+        user_id: user.user_id, // ✅ corrected here
       }));
     }
   }, [user]);
@@ -28,12 +28,12 @@ export default function TransactionForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const payload = {
         ...form,
         user_id: parseInt(form.user_id),
         amount: parseFloat(form.amount),
+        date: new Date(form.date).toISOString(),
       };
 
       await axios.post("http://localhost:8000/transactions", payload);
@@ -44,6 +44,7 @@ export default function TransactionForm() {
         amount: "",
         description: "",
         date: "",
+        method: "cash",
       }));
     } catch (err) {
       console.error("Transaction error:", err.response?.data || err);
@@ -52,7 +53,11 @@ export default function TransactionForm() {
   };
 
   if (!user) {
-    return <div className="text-center mt-6 text-gray-600">Please log in to add a transaction.</div>;
+    return (
+      <div className="text-center mt-6 text-gray-600">
+        Please log in to add a transaction.
+      </div>
+    );
   }
 
   return (

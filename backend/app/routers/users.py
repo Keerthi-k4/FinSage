@@ -37,5 +37,10 @@ def login_user(user: UserLogin, db: Session = Depends(get_db)):
     if not bcrypt.checkpw(user.password.encode('utf-8'), db_user.password.encode('utf-8')):
         raise HTTPException(status_code=400, detail="Invalid email or password")
 
-    # Success: return user id (you can also return a token if needed)
-    return {"message": "Login successful", "user_id": db_user.id}
+    # ✅ Include name in response
+    return {
+        "message": "Login successful",
+        "user_id": db_user.id,
+        "name": db_user.name,
+        "email": db_user.email  # optional, but often useful
+    }

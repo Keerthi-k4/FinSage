@@ -10,10 +10,17 @@ export default function AuthPage() {
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext); // 👈 use context login
+  const { login } = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    console.log("Submitting form...");
+    console.log("isLogin:", isLogin);
+    console.log("Email:", email);
+    console.log("Name:", name);
+    console.log("Password:", password);
+
     try {
       const url = isLogin
         ? "http://localhost:8000/users/login"
@@ -21,11 +28,22 @@ export default function AuthPage() {
 
       const payload = isLogin ? { email, password } : { name, email, password };
 
+      console.log("Request URL:", url);
+      console.log("Payload:", payload);
+
       const res = await axios.post(url, payload);
-      login(res.data); // 👈 set user in context
+
+      console.log("Response received:", res.data);
+
+      // ⚡ Save user to context
+      login(res.data);
+
+      console.log("User logged in and context updated. Navigating to /home...");
       navigate("/home");
     } catch (err) {
-      alert(err.response?.data?.detail || "Auth failed");
+      console.error("Auth error:", err);
+      console.error("Error details:", err.response?.data || err);
+      alert(err.response?.data?.detail || "Authentication failed");
     }
   };
 
@@ -42,7 +60,10 @@ export default function AuthPage() {
             <input
               type="text"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => {
+                setName(e.target.value);
+                console.log("Name changed:", e.target.value);
+              }}
               placeholder="Your name"
               className="w-full p-2 mb-3 border rounded"
               required
@@ -54,7 +75,10 @@ export default function AuthPage() {
         <input
           type="email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            console.log("Email changed:", e.target.value);
+          }}
           placeholder="Email"
           className="w-full p-2 mb-3 border rounded"
           required
@@ -64,7 +88,10 @@ export default function AuthPage() {
         <input
           type="password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            console.log("Password changed:", e.target.value);
+          }}
           placeholder="Password"
           className="w-full p-2 mb-4 border rounded"
           required
@@ -81,7 +108,10 @@ export default function AuthPage() {
           {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
           <button
             type="button"
-            onClick={() => setIsLogin(!isLogin)}
+            onClick={() => {
+              setIsLogin(!isLogin);
+              console.log("Switched mode. isLogin:", !isLogin);
+            }}
             className="text-blue-600 underline"
           >
             {isLogin ? "Register" : "Login"}

@@ -7,10 +7,10 @@ export default function SummaryDashboard() {
   const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    if (!user?.id) return;
+    if (!user?.user_id) return;
 
     axios
-      .get(`http://localhost:8000/summary?user_id=${user.id}`)
+      .get(`http://localhost:8000/summary?user_id=${user.user_id}`)
       .then((res) => setSummary(res.data.summary))
       .catch((err) => console.error("Failed to fetch summary", err));
   }, [user]);

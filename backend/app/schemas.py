@@ -26,7 +26,7 @@ class TransactionCreate(BaseModel):
     user_id: int
     amount: float
     description: str
-    date: date
+    date: datetime
     method: str
 
 class Transaction(BaseModel):
