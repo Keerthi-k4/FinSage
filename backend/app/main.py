@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
 from . import models, database
-from .routers import users, transactions, summary, categorize, chat
+from .routers import users, transactions, summary, categorize, chat, forecast
 from . import schemas, crud
 from .database import get_db
 
@@ -28,6 +28,7 @@ app.include_router(transactions.router)
 app.include_router(summary.router)
 app.include_router(categorize.router)
 app.include_router(chat.router)
+app.include_router(forecast.router)
 
 # Optional: Direct endpoint if not using router
 @app.post("/transactions", response_model=schemas.Transaction)

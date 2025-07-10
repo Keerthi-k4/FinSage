@@ -7,3 +7,7 @@ psycopg2-binary
 pydantic[email]
 mistralai==0.4.2
 bcrypt
+prophet
+pandas
+numpy
+scikit-learn
