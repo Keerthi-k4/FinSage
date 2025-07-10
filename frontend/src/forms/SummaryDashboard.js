@@ -1,6 +1,16 @@
 import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../AuthContext";
+import { Doughnut } from "react-chartjs-2";
+import { motion } from "framer-motion";
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function SummaryDashboard() {
   const [summary, setSummary] = useState({});
@@ -23,20 +33,71 @@ export default function SummaryDashboard() {
     );
   }
 
+  const colors = [
+    "#f87171", // red
+    "#60a5fa", // blue
+    "#34d399", // green
+    "#fbbf24", // yellow
+    "#a78bfa", // purple
+    "#fb923c", // orange
+  ];
+
+  const categories = Object.keys(summary);
+  const totals = Object.values(summary);
+
+  const chartData = {
+    labels: categories,
+    datasets: [
+      {
+        data: totals,
+        backgroundColor: colors.slice(0, categories.length),
+        hoverOffset: 10,
+      },
+    ],
+  };
+
   return (
-    <div className="max-w-xl mx-auto mt-6 p-4 bg-white rounded shadow">
-      <h2 className="text-xl font-bold mb-4">Expense Summary</h2>
-      {Object.keys(summary).length === 0 ? (
-        <p>No data yet.</p>
+    <div className="max-w-3xl mx-auto mt-8 p-6 bg-gradient-to-r from-indigo-100 via-purple-100 to-pink-100 rounded-2xl shadow-2xl">
+      <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-6">
+        💸 Expense Summary
+      </h2>
+
+      {categories.length === 0 ? (
+        <p className="text-center text-gray-600">No data yet.</p>
       ) : (
-        <ul className="space-y-2">
-          {Object.entries(summary).map(([category, total]) => (
-            <li key={category} className="flex justify-between">
-              <span className="capitalize">{category}</span>
-              <span className="font-semibold">₹{total.toFixed(2)}</span>
-            </li>
-          ))}
-        </ul>
+        <>
+          <div className="flex justify-center mb-8">
+            <div className="w-60 h-60">
+              <Doughnut data={chartData} />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {categories.map((category, idx) => (
+              <motion.div
+                key={category}
+                className="p-4 bg-white rounded-xl shadow hover:shadow-lg transition-all"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.1 }}
+              >
+                <div className="flex justify-between items-center">
+                  <span className="text-lg font-semibold capitalize">
+                    {category}
+                  </span>
+                  <span
+                    className="px-3 py-1 rounded-full text-white text-sm font-bold"
+                    style={{
+                      backgroundColor: colors[idx % colors.length],
+                    }}
+                  >
+                    ₹{summary[category].toFixed(2)}
+                  </span>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );
