@@ -7,7 +7,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True)
     name = Column(String)
-    password = Column(String)  # ➕ Add this
+    # ✅ Remove password since Google handles auth
 
 
 class Transaction(Base):

@@ -4,14 +4,13 @@ from typing import Optional
 from datetime import datetime
 
 # User schemas
+# User schemas
 
-class UserCreate(BaseModel):
+class UserBase(BaseModel):
     name: str
     email: str
-    password: str
 
-class UserLogin(BaseModel):
-    email: str
+class UserCreate(UserBase):
     password: str
 
 class User(BaseModel):
@@ -21,6 +20,7 @@ class User(BaseModel):
 
     class Config:
         orm_mode = True
+
 
 # Transaction schemas
 class TransactionCreate(BaseModel):

@@ -1,5 +1,5 @@
 // src/App.js
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "./AuthContext";
 
@@ -11,68 +11,32 @@ import TransactionPage from "./pages/TransactionPage";
 import SummaryPage from "./pages/SummaryPage";
 import ChatPage from "./pages/ChatPage";
 
-function App() {
+function ProtectedLayout() {
   const { user } = useContext(AuthContext);
+  return user ? (
+    <>
+      <Navbar />
+      <Outlet />
+    </>
+  ) : (
+    <Navigate to="/" />
+  );
+}
 
+function App() {
   return (
     <Router>
       <Routes>
-        {/* Default route: login/register */}
+        {/* Public login route */}
         <Route path="/" element={<AuthPage />} />
 
-        {/* Protected routes */}
-        <Route
-          path="/home"
-          element={
-            user ? (
-              <>
-                <Navbar />
-                <Home />
-              </>
-            ) : (
-              <Navigate to="/" />
-            )
-          }
-        />
-        <Route
-          path="/transactions"
-          element={
-            user ? (
-              <>
-                <Navbar />
-                <TransactionPage />
-              </>
-            ) : (
-              <Navigate to="/" />
-            )
-          }
-        />
-        <Route
-          path="/summary"
-          element={
-            user ? (
-              <>
-                <Navbar />
-                <SummaryPage />
-              </>
-            ) : (
-              <Navigate to="/" />
-            )
-          }
-        />
-        <Route
-          path="/chat"
-          element={
-            user ? (
-              <>
-                <Navbar />
-                <ChatPage />
-              </>
-            ) : (
-              <Navigate to="/" />
-            )
-          }
-        />
+        {/* Protected layout wrapper */}
+        <Route element={<ProtectedLayout />}>
+          <Route path="/home" element={<Home />} />
+          <Route path="/transactions" element={<TransactionPage />} />
+          <Route path="/summary" element={<SummaryPage />} />
+          <Route path="/chat" element={<ChatPage />} />
+        </Route>
       </Routes>
     </Router>
   );

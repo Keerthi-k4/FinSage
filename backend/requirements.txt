@@ -11,3 +11,5 @@ prophet
 pandas
 numpy
 scikit-learn
+google-auth
+requests
