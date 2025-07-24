@@ -1,3 +1,4 @@
+// src/components/Navbar.js
 import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../AuthContext";
@@ -20,6 +21,7 @@ export default function Navbar() {
           <Link to="/transactions" className="hover:underline">Transactions</Link>
           <Link to="/summary" className="hover:underline">Summary</Link>
           <Link to="/chat" className="hover:underline">Chat</Link>
+          <Link to="/receipt" className="hover:underline">Scan Receipt</Link> {/* ✅ Added link */}
         </div>
         {user && (
           <div className="flex items-center gap-4">

@@ -10,11 +10,14 @@ import Home from "./pages/Home";
 import TransactionPage from "./pages/TransactionPage";
 import SummaryPage from "./pages/SummaryPage";
 import ChatPage from "./pages/ChatPage";
+import ReceiptPage from "./pages/ReceiptPage"; // ✅ Added import
+import { Toaster } from "react-hot-toast";
 
 function ProtectedLayout() {
   const { user } = useContext(AuthContext);
   return user ? (
     <>
+      <Toaster position="top-right" /> {/* ⬅️ required */}
       <Navbar />
       <Outlet />
     </>
@@ -36,6 +39,7 @@ function App() {
           <Route path="/transactions" element={<TransactionPage />} />
           <Route path="/summary" element={<SummaryPage />} />
           <Route path="/chat" element={<ChatPage />} />
+          <Route path="/receipt" element={<ReceiptPage />} /> {/* ✅ Added route */}
         </Route>
       </Routes>
     </Router>

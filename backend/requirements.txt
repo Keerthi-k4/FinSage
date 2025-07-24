@@ -13,3 +13,6 @@ numpy
 scikit-learn
 google-auth
 requests
+pytesseract
+python-multipart
+Pillow
